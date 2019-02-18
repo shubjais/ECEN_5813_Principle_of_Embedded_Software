@@ -1,3 +1,11 @@
+/**
+* @brief
+*Definition of help function which display's all the available commands.
+*
+* @author Shubham Jaiswal and Ayush Dhoot
+*/
+
+
 #include <stdio.h>
 #include "help.h"
 

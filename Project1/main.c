@@ -1,3 +1,12 @@
+/**
+* @brief 
+* Main function: gets the input from user and invokes the appropriate 
+* function, depending upon the user input.
+* @author Shubham Jaiswal and Ayush Dhoot.
+*/
+
+
+
 #include <stdio.h>
 #include <stdint.h>
 #include <string.h>
@@ -34,7 +43,7 @@ int main()
 
 		else 
 		{
-			printf("\nEntered command is not a valid command. Try 'help'.\n");
+			printf("\nEntered command is not yet supported or not a valid command. Try 'help or ex'.\n");
 		}
 	}
 
