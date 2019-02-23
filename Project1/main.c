@@ -1,51 +1,55 @@
 /**
-* @brief 
-* Main function: gets the input from user and invokes the appropriate 
-* function, depending upon the user input.
-* @author Shubham Jaiswal and Ayush Dhoot.
+* @brief Contains the main body of the program
+*
+* @author Ayush Dhoot and Shubham Jaiswal
 */
 
 
 
-#include <stdio.h>
-#include <stdint.h>
-#include <string.h>
-#include "help.h"
+#include "main.h"
 
-char input[10];
-//char cmd[10] = "ex";
-int e = 1;
 
-void ex(void)
-{
-	e=0;
-	printf("\n");
-}
+
+
+table lookup[]= {{"help\n",&help},
+				{"allocate\n",&allocate_mem},\
+				{"free\n",&free_mem},\
+				//{"disp",&disp},\
+				//{"write",&write},\
+				//{"invert",&invert},\
+				//{"write_p",&write_pattern},\
+				//{"verify_p",&verify_pattern},
+				 {"ex\n",&ex}};
+
 
 int main()
 {
+	e = 1;
+	uint8_t found;
 	printf("\nType help to get the list of commands.\n");
-	
+
 	while(e)
 	{
 		fgets(input,10,stdin);
-
-		if (strcmp(input,"help\n") == 0)
+		for (int i=0; i<4; i++)
 		{
-			help();	
+			found = 0;
+			if (strcmp(input,lookup[i].ip) == 0)
+			{
+				found = 1;
+				(*lookup[i].my_func)();
+				//break;	
+			}
+			
+			
+			else if(i == 3)
+			{
+			printf("\nEntered command is not a valid command. Try 'help'.\n");
+			break;
+			}
+			
 		}
-
-		else if (strcmp(input,"ex\n") == 0)
-		{
-			printf("exiting...");
-			ex();
-		}
-
-		else 
-		{
-			printf("\nEntered command is not yet supported or not a valid command. Try 'help or ex'.\n");
-		}
+		
 	}
-
 	return 0;
 }
