@@ -25,7 +25,7 @@ table lookup[]= {{"help\n",&help},
 int main()
 {
 	e = 1;
-	uint8_t found;
+
 	printf("\nType help to get the list of commands.\n");
 
 	while(e)
@@ -33,12 +33,10 @@ int main()
 		fgets(input,10,stdin);
 		for (int i=0; i<4; i++)
 		{
-			found = 0;
 			if (strcmp(input,lookup[i].ip) == 0)
 			{
-				found = 1;
 				(*lookup[i].my_func)();
-				//break;	
+				break;	
 			}
 			
 			
