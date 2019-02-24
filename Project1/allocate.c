@@ -11,8 +11,8 @@ void allocate_mem()
 	printf("Enter the number of 32 bit words to be allocated: ");
 	scanf("%d",&mem_allocate);
 	printf("\n");
-	ptr = malloc(mem_allocate*4);
-	last_ptr = ptr + (mem_allocate);
+	ptr = malloc(mem_allocate * 4);
+	last_ptr = ptr + (mem_allocate - 1);
 
 	if(ptr == NULL)
 	{

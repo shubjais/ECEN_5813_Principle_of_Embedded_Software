@@ -28,6 +28,9 @@
 #include "exit.h"
 #include "allocate.h"
 #include "free.h"
+#include "displaymem.h"
+#include "writemem.h"
+#include "invert.h"
 
 
 typedef struct
@@ -38,7 +41,7 @@ void (*my_func)();
 }table;
  
 
-char input[10];
+char input[15];
 
 
 #endif
