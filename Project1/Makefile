@@ -25,5 +25,8 @@ writemem.o: writemem.c writemem.h allocate.h
 invert.o: invert.c invert.h allocate.h
 	cc -c invert.c
 
+test: edit test.txt
+	./edit < test.txt
+
 clean: 
 	rm edit main.o help.o exit.o allocate.o free.o displaymem.o writemem.o invert.o

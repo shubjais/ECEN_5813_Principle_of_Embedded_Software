@@ -1,3 +1,9 @@
+/**
+* @brief Write data at user defined memory location
+*
+* @author Ayush Dhoot and Shubham Jaiswal
+*/
+
 #include "writemem.h"
 
 void write_mem()
@@ -54,7 +60,7 @@ void write_mem()
 					{
 						printf("Enter the 32 bit value in hexadecimal form that you wish to write:");
 						scanf("%x",i);				
-						printf("\n Value written in the memory!!.\n");
+						printf("\nValue written in the memory!!!\n");
 						i++;
 					}
 				}
@@ -73,6 +79,7 @@ void write_mem()
 		if(k == mem_allocate)					//Condition to check whether entered address is valid or not
    		{
 			printf("\nThe address entered is not a valid address");
+			printf("\n");
 		}
 
 	}

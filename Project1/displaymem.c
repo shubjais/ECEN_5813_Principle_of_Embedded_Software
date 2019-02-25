@@ -1,3 +1,10 @@
+/**
+* @brief Display the contents of a user defined memory location
+*
+* @author Ayush Dhoot and Shubham Jaiswal
+*/
+
+
 #include "displaymem.h"
 
 void display_mem()
@@ -71,6 +78,7 @@ void display_mem()
 		if(k == mem_allocate)					//Condition to check whether entered address is valid or not
    		{
 			printf("\nThe address entered is not a valid address");
+			printf("\n");
 		}
 	}	
 }

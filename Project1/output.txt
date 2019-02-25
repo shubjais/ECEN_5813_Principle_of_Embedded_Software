@@ -1,0 +1,62 @@
+./edit < test.txt
+
+Type help to get the list of commands.
+Enter the number of 32 bit words to be allocated: 
+Starting address of allocated memory: 0x55ae70589280
+Please Input another command or try 'help' to get the list of commands.
+Allocated memory blocks on which data is to be written:
+
+0x55ae70589280
+0x55ae70589284
+
+Do you wish to:
+(1)Type the address on which you wish to write the data		
+(2)Give an offset from 0x55ae70589280
+Enter the offset from memory address 0x55ae70589280:Enter the no of word blocks data you wish to write
+Enter the 32 bit value in hexadecimal form that you wish to write:
+Value written in the memory!!!
+Please Input another command or try 'help' to get the list of commands.
+Allocated memory addresses on which data can be displayed:
+
+0x55ae70589280
+0x55ae70589284
+
+Do you wish to:
+(1)Type the address of which you wish to see the data		
+(2)Give an offset from 0x55ae70589280
+Enter the offset from memory address 0x55ae70589280:Enter the no of word blocks data you wish to see
+Data at address 0x55ae70589280 is 11111111
+Please Input another command or try 'help' to get the list of commands.
+Allocated memory addresses on which data can be inverted:
+
+0x55ae70589280
+0x55ae70589284
+
+Do you wish to:
+(1)Type the address of which you wish to invert the data		
+(2)Give an offset from 0x55ae70589280
+Enter the offset from memory address 0x55ae70589280:Enter the no of word blocks data you wish to invert
+Data before inversion at address 0x55ae70589280 is 11111111
+Data after inversion at address 0x55ae70589280 is eeeeeeee
+
+Time taken to invert the bits at specified memory address:-0.000003 seconds
+Please Input another command or try 'help' to get the list of commands.
+Allocated memory addresses on which data can be displayed:
+
+0x55ae70589280
+0x55ae70589284
+
+Do you wish to:
+(1)Type the address of which you wish to see the data		
+(2)Give an offset from 0x55ae70589280
+Enter the offset from memory address 0x55ae70589280:Enter the no of word blocks data you wish to see
+Data at address 0x55ae70589280 is eeeeeeee
+Please Input another command or try 'help' to get the list of commands.
+0
+0
+0
+0
+Memory Block freed.
+Please Input another command or try 'help' to get the list of commands.
+exiting...
+Please Input another command or try 'help' to get the list of commands.

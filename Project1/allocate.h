@@ -1,5 +1,5 @@
 /*****************************************************************************
-* Copyright (C) 2018 by Shubham Jaiswal and Ayush Dhoot
+* Copyright (C) 2019 by Shubham Jaiswal and Ayush Dhoot
 *
 * Redistribution, modification or use of this software in source or binary
 * forms is permitted as long as the files maintain this copyright. Users are
@@ -25,9 +25,10 @@
 
 
 #include <stdio.h>
+#include <stdint.h>
 #include <stdlib.h>
-int *ptr;
-int *last_ptr;
+uint32_t *ptr;
+uint32_t *last_ptr;
 //int *mem = *ptr;
 //int i;
 int mem_allocate;

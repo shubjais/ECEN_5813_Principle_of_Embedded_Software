@@ -1,4 +1,11 @@
+/**
+* @brief Invert the memory contents using a bitwise NOT operation 
+*
+* @author Ayush Dhoot and Shubham Jaiswal
+*/
+
 #include "invert.h"
+#include <time.h>
 
 void invert_mem()
 {
@@ -59,6 +66,7 @@ void invert_mem()
 					}
 					clock_t end = clock();
 					printf("\nTime taken to invert the bits at specified memory address:%f seconds",(double)(start - end) / CLOCKS_PER_SEC);
+					printf("\n");
 				}
 				else
 				{
@@ -74,6 +82,7 @@ void invert_mem()
 		if(k == mem_allocate)					//Condition to check whether entered address is valid or not
    		{
 			printf("\nThe address entered is not a valid address");
+			printf("\n");
 		}
 		
 	}
