@@ -10,7 +10,7 @@ void write_mem()
 {
 	uint32_t *write_addr;
 	uint32_t *i, *j;
-	int choice, offset, k = 0, words_available = 0, input_no_words = 0;
+	int choice, offset, valid_n = 0, words_available = 0, input_no_words = 0;
 	
 	if(first_ptr == NULL)
 	{
@@ -28,7 +28,7 @@ void write_mem()
 				"\n1.Type the address on which you wish to write the data"
 				"\n2.Give an offset from %p\n", first_ptr);
 		scanf("%d",&choice);
-		
+
 		switch(choice)
 		{
 			case 1:
@@ -74,11 +74,11 @@ void write_mem()
 			} 
 			else
 			{
-			 	k++;					
+			 	valid_n++;					
 			}
 		}
 
-		if(k == mem_allocate)					//Condition to check whether entered address is valid or not
+		if(valid_n == mem_allocate)					//Condition to check whether entered address is valid or not
    		{
 			printf("\nThe address entered is not a valid address");
 			printf("\n");
