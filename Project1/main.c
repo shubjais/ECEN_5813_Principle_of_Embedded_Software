@@ -17,7 +17,7 @@ table lookup[]= {{"help",&help},
 				{"disp",&display_mem},
 				{"write",&write_mem},
 				{"invert",&invert_mem},
-				//{"write_p",&write_pattern},\
+				//{"write_p",&write_pattern},
 				//{"verify_p",&verify_pattern},
 				 {"ex",&ex}};
 

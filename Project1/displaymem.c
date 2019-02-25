@@ -14,7 +14,7 @@ void display_mem()
 	int choice, offset, valid_n = 0, words_available = 0, input_no_words = 0;
 	
 
-	if(first_ptr == NULL)
+	if(first_ptr == NULL)														//check for uninitialized memory block
 	{
 		printf("No memory block is allocated. Please allocate a memory block first.\n");
 		exit(0);  // Change it with return later on.
@@ -23,7 +23,7 @@ void display_mem()
 	{
 		printf("Allocated memory addresses on which data can be displayed:\n");
 
-		for(i = first_ptr; i <= last_ptr; i++)
+		for(i = first_ptr; i <= last_ptr; i++)							
 		{
 			printf("\n%p",i);
 		}

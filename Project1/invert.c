@@ -1,5 +1,5 @@
 /**
-* @brief Invert the memory contents using a bitwise NOT operation 
+* @brief Invert the memory contents using a bitwise NOT operation and calculate the time taken to perform the operation
 *
 * @author Ayush Dhoot and Shubham Jaiswal
 */

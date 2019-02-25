@@ -7,7 +7,7 @@
 #include <stdio.h>
 #include "exit.h"
 
-
+/* exit the program */
 void ex(void)
 {
 	e=0;

@@ -1,5 +1,5 @@
 /**
-* @brief Allocate memory in multiples of 32 bit words
+* @brief Allocate memory (in multiples of 32 bit words)
 *
 * @author Ayush Dhoot and Shubham Jaiswal
 */
@@ -11,10 +11,10 @@ void allocate_mem()
 	printf("Enter the number of 32 bit words to be allocated: ");
 	scanf("%d",&mem_allocate);
 	printf("\n");
-	first_ptr = (uint32_t *)malloc(mem_allocate * 4);
-	last_ptr = first_ptr + (mem_allocate - 1);
+	first_ptr = (uint32_t *)malloc(mem_allocate * 4);		//starting address of the allocated memory
+	last_ptr = first_ptr + (mem_allocate - 1);				//end address of allocated memory
 
-	if(first_ptr == NULL)
+	if(first_ptr == NULL)									//check if the allocated memory is null
 	{
 		printf("Memory cannot be allocated.\n");
 		exit(0);

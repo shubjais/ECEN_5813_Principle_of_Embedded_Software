@@ -52,10 +52,7 @@ Do you wish to:
 Enter the offset from memory address 0x55ae70589280:Enter the no of word blocks data you wish to see
 Data at address 0x55ae70589280 is eeeeeeee
 Please Input another command or try 'help' to get the list of commands.
-0
-0
-0
-0
+
 Memory Block freed.
 Please Input another command or try 'help' to get the list of commands.
 exiting...
