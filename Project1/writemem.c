@@ -28,6 +28,7 @@ void write_mem()
 				"\n1.Type the address on which you wish to write the data"
 				"\n2.Give an offset from %p\n", first_ptr);
 		scanf("%d",&choice);
+		
 		switch(choice)
 		{
 			case 1:

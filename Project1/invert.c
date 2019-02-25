@@ -29,6 +29,7 @@ void invert_mem()
 				"\n1.Type the address of which you wish to invert the data"
 				"\n2.Give an offset from %p\n", first_ptr);
 		scanf("%d",&choice);
+		
 		switch(choice)
 		{
 			case 1:
@@ -73,6 +74,7 @@ void invert_mem()
 				{
 					printf("Asked number of blocks not avaible from the desired address.\n");
 				}
+				break;
 			} 
 			else
 			{

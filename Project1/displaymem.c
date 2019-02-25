@@ -30,6 +30,7 @@ void display_mem()
 				"\n1.Type the address of which you wish to see the data"
 				"\n2.Give an offset from %p\n", first_ptr);
 		scanf("%d",&choice);
+		
 		switch(choice)
 		{
 			case 1:
