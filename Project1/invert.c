@@ -65,7 +65,7 @@ void invert_mem()
 						i++;
 					}
 					clock_t end = clock();
-					printf("\nTime taken to invert the bits at specified memory address:%f seconds",(double)(start - end) / CLOCKS_PER_SEC);
+					printf("\nTime taken to invert the bits at specified memory address:%f seconds",(double)(end - start) / CLOCKS_PER_SEC);
 					printf("\n");
 				}
 				else
