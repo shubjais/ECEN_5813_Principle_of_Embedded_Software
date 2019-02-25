@@ -24,25 +24,34 @@ void write_mem()
 		{
 			printf("\n%p",i);
 		}
-		printf("\n\nPlease select one of following ways to specify the address:"
-				"\n1.Type the address on which you wish to write the data"
-				"\n2.Give an offset from %p\n", first_ptr);
-		scanf("%d",&choice);
-
-		switch(choice)
+		while(1)
 		{
-			case 1:
-			printf("Enter the address at which you want to write\n");
-			scanf("%p", &write_addr);
-			break;
-			case 2:
-			printf("Enter the offset from memory address %p:", first_ptr);
-			scanf("%d", &offset);
-			write_addr = first_ptr + offset;
-			break;
-			default:
-			printf("Not a valid input");
+			printf("\n\nPlease select one of following ways to specify the address:"
+					"\n1.Type the address on which you wish to write the data"
+					"\n2.Give an offset from %p\n", first_ptr);
+			scanf("%d",&choice);
 
+			switch(choice)
+			{
+				case 1:
+				printf("Enter the address at which you want to write\n");
+				scanf("%p", &write_addr);
+				break;
+
+				case 2:
+				printf("Enter the offset from memory address %p:", first_ptr);
+				scanf("%d", &offset);
+				write_addr = first_ptr + offset;
+				break;
+				
+				default:
+				printf("Not a valid input");
+			}
+
+			if(choice == 1 || choice == 2)
+			{
+				break;
+			}
 		}
 
 		printf("Enter the no of word blocks data you wish to write\n");

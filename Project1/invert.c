@@ -25,26 +25,35 @@ void invert_mem()
 		{
 			printf("\n%p",i);
 		}
-		printf("\n\nPlease select one of following ways to specify the address:"
-				"\n1.Type the address of which you wish to invert the data"
-				"\n2.Give an offset from %p\n", first_ptr);
-		scanf("%d",&choice);
-
-		switch(choice)
+		while(1)
 		{
-			case 1:
-			printf("Enter the address of memory block of which you wish to see the data\n");
-			scanf("%p", &inv_addr);
-			break;
-			case 2:
-			printf("Enter the offset from memory address %p:", first_ptr);
-			scanf("%d", &offset);
-			inv_addr = first_ptr + offset;
-			break;
-			default:
-			printf("Not a valid input");
-		}
+			printf("\n\nPlease select one of following ways to specify the address:"
+					"\n1.Type the address of which you wish to invert the data"
+					"\n2.Give an offset from %p\n", first_ptr);
+			scanf("%d",&choice);
 
+			switch(choice)
+			{
+				case 1:
+				printf("Enter the address of memory block of which you wish to see the data\n");
+				scanf("%p", &inv_addr);
+				break;
+
+				case 2:
+				printf("Enter the offset from memory address %p:", first_ptr);
+				scanf("%d", &offset);
+				inv_addr = first_ptr + offset;
+				break;
+
+				default:
+				printf("Not a valid input");
+			}
+
+			if(choice == 1 || choice == 2)
+			{
+				break;
+			}
+		}
 		printf("Enter the no of word blocks data you wish to invert\n");
 		scanf("%d", &input_no_words);
 
@@ -67,7 +76,7 @@ void invert_mem()
 						i++;
 					}
 					clock_t end = clock();
-					printf("\nTime taken to invert the bits at specified memory address:%f seconds",(double)(end - start) / CLOCKS_PER_SEC);
+					printf("\nTime taken to invert the bits at specified memory address(es):%f seconds",(double)(end - start) / CLOCKS_PER_SEC);
 					printf("\n");
 				}
 				else
