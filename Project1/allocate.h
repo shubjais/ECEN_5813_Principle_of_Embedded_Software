@@ -27,11 +27,12 @@
 #include <stdio.h>
 #include <stdint.h>
 #include <stdlib.h>
-uint32_t *ptr;
+uint32_t *first_ptr;
 uint32_t *last_ptr;
-//int *mem = *ptr;
-//int i;
 int mem_allocate;
+
+
 void allocate_mem(void);
+
 
 #endif

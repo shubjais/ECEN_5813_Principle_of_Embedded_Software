@@ -12,7 +12,7 @@ void write_mem()
 	uint32_t *i, *j;
 	int choice, offset, k = 0, words_available = 0, input_no_words = 0;
 	
-	if(ptr == NULL)
+	if(first_ptr == NULL)
 	{
 		printf("No memory block is allocated. Please allocate a memory block first.\n");
 		exit(0);  // Change it with return later on.
@@ -20,12 +20,12 @@ void write_mem()
 	else 
 	{
 		printf("Allocated memory blocks on which data is to be written:\n");
-		for(i = ptr; i <= last_ptr; i++)
+		for(i = first_ptr; i <= last_ptr; i++)
 		{
 			printf("\n%p",i);
 		}
 		printf("\n\nDo you wish to:\n(1)Type the address on which you wish to write the data\
-		\n(2)Give an offset from %p\n", ptr);
+		\n(2)Give an offset from %p\n", first_ptr);
 		scanf("%d",&choice);
 		switch(choice)
 		{
@@ -34,9 +34,9 @@ void write_mem()
 			scanf("%p", &write_addr);
 			break;
 			case 2:
-			printf("Enter the offset from memory address %p:", ptr);
+			printf("Enter the offset from memory address %p:", first_ptr);
 			scanf("%d", &offset);
-			write_addr = ptr + offset;
+			write_addr = first_ptr + offset;
 			break;
 			default:
 			printf("Not a valid input");
@@ -46,7 +46,7 @@ void write_mem()
 		printf("Enter the no of word blocks data you wish to write\n");
 		scanf("%d", &input_no_words);
 
-		for(i = ptr;i <= last_ptr; i++)
+		for(i = first_ptr;i <= last_ptr; i++)
 		{		
 			if(i == write_addr)		
 			{

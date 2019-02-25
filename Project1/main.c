@@ -35,10 +35,6 @@ int main()
 		fgets(input,15,stdin);
 		
 		newline = strchr(input, '\n');
-		// if(strcmp(input,'\n') == 0)
-		// {
-		// 	found = 1;
-		// }
 
 		if (newline)
 		{			
@@ -51,7 +47,7 @@ int main()
 			{
 				found = 1;
 				(*lookup[i].my_func)();
-				if(strcmp(input, lookup[0].ip) != 0)
+				if(strcmp(input, lookup[0].ip) != 0 && strcmp(input, lookup[6].ip) != 0)
 				{
 					printf("Please Input another command or try 'help' to get the list of commands.\n");
 				}

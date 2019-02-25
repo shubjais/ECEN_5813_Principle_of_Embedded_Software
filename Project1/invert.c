@@ -13,7 +13,7 @@ void invert_mem()
 	uint32_t *i, *j;
 	int choice, offset, k = 0, words_available = 0, input_no_words = 0;
 
-	if(ptr == NULL)
+	if(first_ptr == NULL)
 	{
 		printf("No memory block is allocated. Please allocate a memory block first.\n");
 		exit(0);  // Change it with return later on.
@@ -21,12 +21,12 @@ void invert_mem()
 	else
 	{
 		printf("Allocated memory addresses on which data can be inverted:\n");
-		for(i = ptr; i <= last_ptr; i++)
+		for(i = first_ptr; i <= last_ptr; i++)
 		{
 			printf("\n%p",i);
 		}
 		printf("\n\nDo you wish to:\n(1)Type the address of which you wish to invert the data\
-		\n(2)Give an offset from %p\n", ptr);
+		\n(2)Give an offset from %p\n", first_ptr);
 		scanf("%d",&choice);
 		switch(choice)
 		{
@@ -35,9 +35,9 @@ void invert_mem()
 			scanf("%p", &inv_addr);
 			break;
 			case 2:
-			printf("Enter the offset from memory address %p:", ptr);
+			printf("Enter the offset from memory address %p:", first_ptr);
 			scanf("%d", &offset);
-			inv_addr = ptr + offset;
+			inv_addr = first_ptr + offset;
 			break;
 			default:
 			printf("Not a valid input");
@@ -46,7 +46,7 @@ void invert_mem()
 		printf("Enter the no of word blocks data you wish to invert\n");
 		scanf("%d", &input_no_words);
 
-		for(i = ptr;i <= last_ptr; i++)
+		for(i = first_ptr;i <= last_ptr; i++)
 		{		
 			if(i == inv_addr)		
 			{

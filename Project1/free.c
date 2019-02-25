@@ -9,7 +9,7 @@
 
 void free_mem()
 {
-	free(ptr);
+	free(first_ptr);
 	
 	printf("Memory Block freed.\n");
 }

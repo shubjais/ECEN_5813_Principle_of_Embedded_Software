@@ -14,7 +14,7 @@ void display_mem()
 	int choice, offset, k = 0, words_available = 0, input_no_words = 0;
 	
 
-	if(ptr == NULL)
+	if(first_ptr == NULL)
 	{
 		printf("No memory block is allocated. Please allocate a memory block first.\n");
 		exit(0);  // Change it with return later on.
@@ -22,12 +22,12 @@ void display_mem()
 	else 
 	{
 		printf("Allocated memory addresses on which data can be displayed:\n");
-		for(i = ptr; i <= last_ptr; i++)
+		for(i = first_ptr; i <= last_ptr; i++)
 		{
 			printf("\n%p",i);
 		}
 		printf("\n\nDo you wish to:\n(1)Type the address of which you wish to see the data\
-		\n(2)Give an offset from %p\n", ptr);
+		\n(2)Give an offset from %p\n", first_ptr);
 		scanf("%d",&choice);
 		switch(choice)
 		{
@@ -36,9 +36,9 @@ void display_mem()
 			scanf("%p", &dis_addr);
 			break;
 			case 2:
-			printf("Enter the offset from memory address %p:", ptr);
+			printf("Enter the offset from memory address %p:", first_ptr);
 			scanf("%d", &offset);
-			dis_addr = ptr + offset;
+			dis_addr = first_ptr + offset;
 			break;
 			default:
 			printf("Not a valid input");
@@ -47,7 +47,7 @@ void display_mem()
 		printf("Enter the no of word blocks data you wish to see\n");
 		scanf("%d", &input_no_words);
 
-		for(i = ptr; i <= last_ptr; i++)
+		for(i = first_ptr; i <= last_ptr; i++)
 		{		
 			if(i == dis_addr)		
 			{
