@@ -25,8 +25,9 @@ void invert_mem()
 		{
 			printf("\n%p",i);
 		}
-		printf("\n\nDo you wish to:\n(1)Type the address of which you wish to invert the data\
-		\n(2)Give an offset from %p\n", first_ptr);
+		printf("\n\nPlease select one of following ways to specify the address:"
+				"\n1.Type the address of which you wish to invert the data"
+				"\n2.Give an offset from %p\n", first_ptr);
 		scanf("%d",&choice);
 		switch(choice)
 		{

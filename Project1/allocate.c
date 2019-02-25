@@ -20,7 +20,7 @@ void allocate_mem()
 		exit(0);
 	}
 
-	printf("Starting address of allocated memory: %p", first_ptr);
+	printf("Starting address of first block of allocated memory: %p", first_ptr);
 	printf("\n");
 
 }
