@@ -21,18 +21,20 @@ int display_mem()
 	}
 	else 
 	{
-		printf("Allocated memory addresses on which data can be displayed:\n");
+		printf("Allocated memory addresses on which data can be displayed:\n"); // print the address of allocated blocks
 
 		for(i = first_ptr; i <= last_ptr; i++)							
 		{
 			printf("\n%p",i);
 		}
 
-		while(1)
+		printf("\n\nPlease select one of following ways to specify the address:"
+				"\n1.Type the address of which you wish to see the data"
+				"\n2.Give an offset from %p"
+				"\n3.Exit command.\n", first_ptr);
+
+		while(1) // Ask user the address of the block at which he/she wishes to display the data.
 		{
-			printf("\n\nPlease select one of following ways to specify the address:"
-					"\n1.Type the address of which you wish to see the data"
-					"\n2.Give an offset from %p\n", first_ptr);
 			scanf("%d",&choice);
 
 			switch(choice)
@@ -48,8 +50,11 @@ int display_mem()
 				dis_addr = first_ptr + offset;
 				break;
 
+				case 3:
+				return 0;
+
 				default:
-				printf("Not a valid input");
+				printf("Not a valid input.Please try again with a valid input or enter 3 to input another command:\n");
 
 			}
 			if(choice == 1 || choice == 2)
@@ -58,9 +63,11 @@ int display_mem()
 			}
 		}
 
+		//Ask user the number of blocks at which he/she wishes to display the data.
 		printf("Enter the no of word blocks data you wish to see\n");
 		scanf("%d", &input_no_words);
 
+		//Check if the address provided by the user is among the allocated memory addresses.
 		for(i = first_ptr; i <= last_ptr; i++)
 		{		
 			if(i == dis_addr)		
@@ -69,9 +76,9 @@ int display_mem()
 				{
 					words_available++;
 				}
-				if(input_no_words <= words_available)
+				if(input_no_words <= words_available) // check if the number of blocks demanded by user fall within the number of allocated blocks.
 				{
-					for(; input_no_words > 0 ; input_no_words--)
+					for(; input_no_words > 0 ; input_no_words--) //print data at the requested memory nlocks.
 					{
 						printf("Data at address %p is %x\n", dis_addr, *dis_addr);
 						dis_addr++;

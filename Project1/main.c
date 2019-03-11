@@ -10,7 +10,7 @@
 
 
 
-
+//Storing commands and address of corresponding functions in the lookup table.
 table lookup[]= {{"help",&help},
 				{"allocate",&allocate_mem},
 				{"free",&free_mem},
@@ -25,7 +25,7 @@ table lookup[]= {{"help",&help},
 int main()
 {
 	e = 1;
-	int found;
+	int found, i;
 	int ret;
 	char *newline;
 	printf("\nType help to get the list of commands.\n");
@@ -37,18 +37,18 @@ int main()
 		
 		newline = strchr(input, '\n');
 
-		if (newline)
+		if (newline) //Removing the next ine character from the end of input string.
 		{			
 			*newline = '\0';
 		}
 
-		for (int i = 0; i < 9; i++)
+		for (i = 0; i < 9; i++)  //Running a loop to check the entered input against the lookup table.
 		{
 			if (strcmp(input, lookup[i].ip) == 0)
 			{
 				found = 1;
-				ret = (*lookup[i].my_func)();
-				if(strcmp(input, lookup[0].ip) != 0 && strcmp(input, lookup[8].ip) != 0)
+				ret = (*lookup[i].my_func)(); //Call the function against the inputed command from the lookup table.
+				if(strcmp(input, lookup[0].ip) != 0 && strcmp(input, lookup[8].ip) != 0) // check if the input command is 'help' or 'ex', dont print these.
 				{
 					if(ret != 0)
 					{
@@ -58,20 +58,11 @@ int main()
 				}
 				break;	
 			}
-			
-			
-			else if(i == 9)
+			else if(i == 8 && strcmp(input, "") == !0)
 			{
-			printf("\nEntered command is not a valid command. Try 'help'.\n");
-			break;
-			}
-			
+				printf("\nEntered command is not a valid command. Try 'help'.\n");
+			}			
 		}
-		// if (found == 0)
-		// {
-		// 	printf("%s\n", input);
-		// 	printf("Entered command is not a valid command. Try 'help' to see the list of available commands.\n");
-		// }
 		
 	}
 	return 0;
