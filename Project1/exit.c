@@ -8,9 +8,10 @@
 #include "exit.h"
 
 /* exit the program */
-void ex(void)
+int ex(void)
 {
 	e=0;
 	printf("exiting...");
 	printf("\n");
+	return 0;
 }

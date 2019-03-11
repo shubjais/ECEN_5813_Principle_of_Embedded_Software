@@ -6,7 +6,7 @@
 
 #include "allocate.h"
 
-void allocate_mem()
+int allocate_mem()
 {
 	printf("Enter the number of 32 bit words to be allocated: ");
 	scanf("%d",&mem_allocate);
@@ -17,10 +17,10 @@ void allocate_mem()
 	if(first_ptr == NULL)									//check if the allocated memory is null
 	{
 		printf("Memory cannot be allocated.\n");
-		exit(0);
+		return (-1);
 	}
 
 	printf("Starting address of first block of allocated memory: %p", first_ptr);
 	printf("\n");
-
+	return 0;
 }

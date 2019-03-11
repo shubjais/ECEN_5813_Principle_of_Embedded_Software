@@ -27,6 +27,6 @@
 #ifndef FREE_H 
 #define FREE_H free.h
 
-void free_mem(void);
+int free_mem(void);
 
 #endif

@@ -23,6 +23,6 @@
 #include "main.h"
 
 __uint32_t e;
-void ex(void);
+int ex(void);
 
 #endif

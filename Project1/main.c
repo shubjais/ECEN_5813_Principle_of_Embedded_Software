@@ -17,15 +17,16 @@ table lookup[]= {{"help",&help},
 				{"disp",&display_mem},
 				{"write",&write_mem},
 				{"invert",&invert_mem},
-				//{"write_p",&write_pattern},
-				//{"verify_p",&verify_pattern},
-				 {"ex",&ex}};
+				{"writep",&write_pattern},
+				{"verifyp",&verify_pattern},
+				{"ex",&ex}};
 
 
 int main()
 {
 	e = 1;
 	int found;
+	int ret;
 	char *newline;
 	printf("\nType help to get the list of commands.\n");
 
@@ -41,21 +42,25 @@ int main()
 			*newline = '\0';
 		}
 
-		for (int i = 0; i < 7; i++)
+		for (int i = 0; i < 9; i++)
 		{
 			if (strcmp(input, lookup[i].ip) == 0)
 			{
 				found = 1;
-				(*lookup[i].my_func)();
-				if(strcmp(input, lookup[0].ip) != 0 && strcmp(input, lookup[6].ip) != 0)
+				ret = (*lookup[i].my_func)();
+				if(strcmp(input, lookup[0].ip) != 0 && strcmp(input, lookup[8].ip) != 0)
 				{
+					if(ret != 0)
+					{
+						printf("Program directed here due to invalid input.Please start again.\n");
+					}
 					printf("Please Input another command or try 'help' to get the list of commands.\n");
 				}
 				break;	
 			}
 			
 			
-			else if(i == 7)
+			else if(i == 9)
 			{
 			printf("\nEntered command is not a valid command. Try 'help'.\n");
 			break;

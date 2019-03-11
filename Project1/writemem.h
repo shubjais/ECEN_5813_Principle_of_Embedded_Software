@@ -27,7 +27,7 @@
 #include <stdint.h>
 #include "allocate.h"
 
-void write_mem(void);
+int write_mem(void);
 
 
 

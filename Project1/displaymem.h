@@ -29,6 +29,6 @@
 #include "allocate.h"
 
 
-void display_mem(void);
+int display_mem(void);
 
 #endif

@@ -22,7 +22,7 @@
 
 
 #include <stdio.h>
-void help(void);
+int help(void);
 
 
 #endif

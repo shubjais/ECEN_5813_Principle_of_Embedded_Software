@@ -8,11 +8,12 @@
 #include "free.h"
 
 
-void free_mem()
+int free_mem()
 {
 	if(first_ptr == NULL)
 	{
 		printf("No memory block allocated or Block already freed.\n");
+		return -1;
 	}
 
 	free(first_ptr);
@@ -22,4 +23,5 @@ void free_mem()
 		printf("Memory Block freed.\n");
 		first_ptr = NULL;
 	}
+	return 0;
 }

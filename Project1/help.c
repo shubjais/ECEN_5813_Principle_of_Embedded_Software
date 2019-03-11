@@ -9,7 +9,7 @@
 #include <stdio.h>
 #include "help.h"
 
-void help()
+int help()
 {
 	printf("\nEntered help function" );
 	printf("\nYou can execute the following commands:");
@@ -22,4 +22,5 @@ void help()
 	printf("\nverifyp - verifies the pseudo-random number at a specified memory location. And returns the amount of time taken for operation");
 	printf("\nex - to exit the command line.");
 	printf("\n");
+	return 0;
 }

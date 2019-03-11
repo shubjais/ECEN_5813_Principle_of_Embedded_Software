@@ -27,7 +27,7 @@
 #include <time.h>
 #include "allocate.h"
 
-void invert_mem(void);
+int invert_mem(void);
 
 
 

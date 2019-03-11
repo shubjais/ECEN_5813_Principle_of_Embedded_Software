@@ -32,7 +32,7 @@ uint32_t *last_ptr;
 int mem_allocate;
 
 
-void allocate_mem(void);
+int allocate_mem(void);
 
 
 #endif

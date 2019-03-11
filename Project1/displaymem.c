@@ -7,7 +7,7 @@
 
 #include "displaymem.h"
 
-void display_mem()
+int display_mem()
 {
 	uint32_t *dis_addr;
 	uint32_t *i, *j;
@@ -17,7 +17,7 @@ void display_mem()
 	if(first_ptr == NULL)														//check for uninitialized memory block
 	{
 		printf("No memory block is allocated. Please allocate a memory block first.\n");
-		exit(0);  // Change it with return later on.
+		return -1;  // Change it with return later on.
 	}
 	else 
 	{
@@ -80,6 +80,7 @@ void display_mem()
 				else
 				{
 					printf("Asked number of blocks not avaible from the desired address.\n");
+					return -1;
 				}
 				break;
 			} 
@@ -93,6 +94,8 @@ void display_mem()
    		{
 			printf("\nThe address entered is not a valid address");
 			printf("\n");
+			return -1;
 		}
 	}	
+	return 0;
 }

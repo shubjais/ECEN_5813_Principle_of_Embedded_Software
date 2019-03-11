@@ -31,12 +31,14 @@
 #include "displaymem.h"
 #include "writemem.h"
 #include "invert.h"
+#include "writepattern.h"
+#include "verifypattern.h"
 
 
 typedef struct
 {
 char *ip;
-void (*my_func)();
+int (*my_func)();
 
 }table;
  
