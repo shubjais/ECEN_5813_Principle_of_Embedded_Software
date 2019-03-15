@@ -27,9 +27,11 @@
 #include <stdio.h>
 #include <stdint.h>
 #include <stdlib.h>
-uint32_t *first_ptr;
-uint32_t *last_ptr;
-int mem_allocate;
+#include "platformselect.h"
+
+extern uint32_t *first_ptr;
+extern uint32_t *last_ptr;
+extern int mem_allocate;
 
 
 int allocate_mem(void);

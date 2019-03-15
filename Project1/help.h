@@ -22,6 +22,8 @@
 
 
 #include <stdio.h>
+#include "platformselect.h"
+
 int help(void);
 
 

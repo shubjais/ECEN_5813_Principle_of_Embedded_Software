@@ -26,6 +26,7 @@
 #include <string.h>
 #include <time.h>
 #include "allocate.h"
+#include "platformselect.h"
 
 int write_pattern(void);
 extern int pattern_wrote;

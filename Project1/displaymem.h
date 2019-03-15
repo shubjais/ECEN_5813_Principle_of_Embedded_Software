@@ -27,7 +27,7 @@
 #include <string.h>
 #include <stdint.h>
 #include "allocate.h"
-
+#include "platformselect.h"
 
 int display_mem(void);
 

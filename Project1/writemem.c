@@ -14,34 +14,37 @@ int write_mem()
 	
 	if(first_ptr == NULL) // Check if any memory block is allocated or not.
 	{
-		printf("No memory block is allocated. Please allocate a memory block first.\n");
+		PRINTF("\n\rNo memory block is allocated. Please allocate a memory block first.");
 		return -1; 
 	}
 	else 
 	{
-		printf("Allocated memory blocks on which data is to be written:\n"); // print the address of allocated blocks
+		PRINTF("\n\rAllocated memory blocks on which data is to be written:"); // print the address of allocated blocks
 		for(i = first_ptr; i <= last_ptr; i++)
 		{
-			printf("\n%p",i);
+			PRINTF("\n\r%p",i);
 		}
 
-		printf("\n\nPlease select one of following ways to specify the address:"
-				"\n1.Type the address on which you wish to write the data"
-				"\n2.Give an offset from %p"
-				"\n3.Exit command.\n", first_ptr);
+		PRINTF("\n\n\rPlease select one of following ways to specify the address:"
+				"\n\r1.Type the address on which you wish to write the data"
+				"\n\r2.Give an offset from %p"
+				"\n\r3.Exit command.\n", first_ptr);
 		while(1) // Ask user the address of the block at which he/she wishes to write the data.
 		{
-			scanf("%d",&choice);
+			SCANF("%d",&choice);
+			PRINTF("\n\r%d",choice);
 			switch(choice)
 			{
 				case 1:
-				printf("Enter the address at which you want to write\n");
-				scanf("%p", &write_addr);
+				PRINTF("\n\rEnter the address at which you want to write");
+				SCANF("%p", &write_addr);
+				PRINTF("\t%p", write_addr);
 				break;
 
 				case 2:
-				printf("Enter the offset from memory address %p:", first_ptr);
-				scanf("%d", &offset);
+				PRINTF("\n\rEnter the offset from memory address %p:", first_ptr);
+				SCANF("%d", &offset);
+				PRINTF("\t%d", offset);
 				write_addr = first_ptr + offset;
 				break;
 
@@ -49,7 +52,7 @@ int write_mem()
 				return 0;
 				
 				default:
-				printf("Not a valid input. Please try again with a valid Input or enter 3 to input another command:\n");
+				PRINTF("\n\rNot a valid input. Please try again with a valid Input or enter 3 to input another command:\n");
 			}
 
 			if(choice == 1 || choice == 2)
@@ -59,8 +62,9 @@ int write_mem()
 		}
 
 		//Ask user the number of blocks at which he/she wishes to write the data.
-		printf("Enter the no of word blocks data you wish to write\n");
-		scanf("%d", &input_no_words);
+		PRINTF("\n\rEnter the no of word blocks data you wish to write");
+		SCANF("%d", &input_no_words);
+		PRINTF("\t%d", input_no_words);
 
 		//Check if the address provided by the user is among the allocated memory addresses.
 		for(i = first_ptr;i <= last_ptr; i++)
@@ -75,15 +79,16 @@ int write_mem()
 				{
 					for(; input_no_words > 0 ; input_no_words--) // Get data from user to be written.
 					{
-						printf("Enter the 32 bit value in hexadecimal form that you wish to write:");
-						scanf("%x",i);				
-						printf("\nValue written in the memory!!!\n");
+						PRINTF("\n\rEnter the 32 bit value in hexadecimal form that you wish to write:");
+						SCANF("%x",i);
+						PRINTF("\t%x", *i);
+						PRINTF("\n\rValue written in the memory!!!");
 						i++;
 					}
 				}
 				else
 				{
-					printf("Asked number of blocks not avaible from the desired address.\n");
+					PRINTF("\n\rAsked number of blocks not avaible from the desired address.\n");
 					return -1;
 				}
 				break;
@@ -96,8 +101,8 @@ int write_mem()
 
 		if(valid_n == mem_allocate)					//Condition to check whether entered address is valid or not
    		{
-			printf("\nThe address entered is not a valid address");
-			printf("\n");
+			PRINTF("\n\rThe address entered is not a valid address");
+			PRINTF("\n");
 			return -1;
 		}
 

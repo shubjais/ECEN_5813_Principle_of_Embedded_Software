@@ -23,6 +23,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "allocate.h"
+#include "platformselect.h"
 
 #ifndef FREE_H 
 #define FREE_H free.h

@@ -33,7 +33,7 @@
 #include "invert.h"
 #include "writepattern.h"
 #include "verifypattern.h"
-
+#include "platformselect.h"
 
 typedef struct
 {

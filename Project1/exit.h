@@ -17,12 +17,13 @@
 *
 */
 
+
 #ifndef EXIT_H
 #define EXIT_H exit.h
+#include <stdint.h>
+#include "platformselect.h"
 
-#include "main.h"
-
-__uint32_t e;
+extern uint32_t e;
 int ex(void);
 
 #endif

@@ -26,6 +26,7 @@
 #include <string.h>
 #include <time.h>
 #include "allocate.h"
+#include "platformselect.h"
 
 int invert_mem(void);
 

@@ -26,6 +26,7 @@
 #include <string.h>
 #include <stdint.h>
 #include "allocate.h"
+#include "platformselect.h"
 
 int write_mem(void);
 

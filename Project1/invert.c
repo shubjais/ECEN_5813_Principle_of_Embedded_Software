@@ -5,6 +5,7 @@
 */
 
 #include "invert.h"
+
 #include <time.h>
 
 int invert_mem()
@@ -15,35 +16,37 @@ int invert_mem()
 
 	if(first_ptr == NULL)  // Check if any memory block is allocated or not.
 	{
-		printf("No memory block is allocated. Please allocate a memory block first.\n");
+		PRINTF("\n\rNo memory block is allocated. Please allocate a memory block first.\n");
 		return -1;  // Change it with return later on.
 	}
 	else
 	{
-		printf("Allocated memory addresses on which data can be inverted:\n"); // print the address of allocated blocks
+		PRINTF("\n\rAllocated memory addresses on which data can be inverted:\n"); // print the address of allocated blocks
 		for(i = first_ptr; i <= last_ptr; i++)
 		{
-			printf("\n%p",i);
+			PRINTF("\n\r\n%p",i);
 		}
 
-		printf("\n\nPlease select one of following ways to specify the address:"
-				"\n1.Type the address of which you wish to invert the data"
-				"\n2.Give an offset from %p"
-				"\n3.Exit command.\n", first_ptr);
+		PRINTF("\n\r\n\nPlease select one of following ways to specify the address:"
+				"\n\r1.Type the address of which you wish to invert the data"
+				"\n\r2.Give an offset from %p"
+				"\n\r3.Exit command.", first_ptr);
 		while(1)  // Ask user the address of the block at which he/she wishes to invert the data.
 		{
-			scanf("%d",&choice);
+			SCANF("%d",&choice);
+			PRINTF("\n\r%d", choice);
 
 			switch(choice)
 			{
 				case 1:
-				printf("Enter the address of memory block of which you wish to see the data\n");
-				scanf("%p", &inv_addr);
+				PRINTF("\n\rEnter the address of memory block of which you wish to see the data\n");
+				SCANF("%p", &inv_addr);
 				break;
 
 				case 2:
-				printf("Enter the offset from memory address %p:", first_ptr);
-				scanf("%d", &offset);
+				PRINTF("\n\rEnter the offset from memory address %p:", first_ptr);
+				SCANF("%d", &offset);
+				PRINTF("\t%d", offset);
 				inv_addr = first_ptr + offset;
 				break;
 
@@ -51,7 +54,7 @@ int invert_mem()
 				return 0;
 
 				default:
-				printf("Not a valid input.Please try again with a valid Input or enter 3 to input another command:\n");
+				PRINTF("\n\rNot a valid input.Please try again with a valid Input or enter 3 to input another command:\n");
 			}
 
 			if(choice == 1 || choice == 2)
@@ -61,8 +64,9 @@ int invert_mem()
 		}
 
 		//Ask user the number of blocks at which he/she wishes to invert the data.
-		printf("Enter the no of word blocks data you wish to invert\n");
-		scanf("%d", &input_no_words);
+		PRINTF("\n\rEnter the no of word blocks data you wish to invert");
+		SCANF("%d", &input_no_words);
+		PRINTF("\t%d", input_no_words);
 
 		//Check if the address provided by the user is among the allocated memory addresses.
 		for(i = first_ptr;i <= last_ptr; i++)
@@ -75,21 +79,39 @@ int invert_mem()
 				}
 				if(input_no_words <= words_available) // check if the number of blocks demanded by user fall within the number of allocated blocks.
 				{
+
+#ifdef LINUX
 					clock_t start = clock();  //start timer
+#endif
+
+#ifdef KL25Z
+					SysTick_Config(16000000);
+#endif
+
 					for(; input_no_words > 0 ; input_no_words--) // Invert data at the requested memory blocks.
 					{
-						printf("Data before inversion at address %p is %x\n", i, *i);
+						PRINTF("\n\rData before inversion at address %p is %x\n", i, *i);
 						*i = ~(*i);
-						printf("Data after inversion at address %p is %x\n", i, *i);
+						PRINTF("\n\rData after inversion at address %p is %x\n", i, *i);
 						i++;
 					}
+
+#ifdef KL25Z
+					uint32_t count = 16000000 - SysTick->VAL;
+					SysTick->CTRL = 0;
+					float timetaken = ((0.047619)*count);
+					PRINTF("\n\r\nTime taken to invert the bits at specified memory address(es): %f micro-seconds",timetaken);
+#endif
+
+#ifdef LINUX
 					clock_t end = clock();  //end timer
-					printf("\nTime taken to invert the bits at specified memory address(es):%f seconds",(double)(end - start) / CLOCKS_PER_SEC);
-					printf("\n");
+					PRINTF("\n\r\nTime taken to invert the bits at specified memory address(es):%f seconds",(double)(end - start) / CLOCKS_PER_SEC);
+					PRINTF("\n\r\n");
+#endif
 				}
 				else
 				{
-					printf("Asked number of blocks not avaible from the desired address.\n");
+					PRINTF("\n\rAsked number of blocks not avaible from the desired address.\n");
 					return -1;
 				}
 				break;
@@ -102,8 +124,8 @@ int invert_mem()
 
 		if(valid_n == mem_allocate)					//Condition to check whether entered address is valid or not
    		{
-			printf("\nThe address entered is not a valid address");
-			printf("\n");
+			PRINTF("\n\r\nThe address entered is not a valid address");
+			PRINTF("\n\r\n");
 			return -1;
 		}
 		

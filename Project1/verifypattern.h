@@ -27,6 +27,7 @@
 #include <time.h>
 #include "allocate.h"
 #include "writepattern.h"
+#include "platformselect.h"
 
 int verify_pattern(void);
 
