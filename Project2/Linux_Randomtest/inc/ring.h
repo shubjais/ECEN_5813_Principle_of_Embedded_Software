@@ -9,7 +9,7 @@
 #define RING_H
 #include <stdbool.h>
 
-#define MAX 3   //size of circular buffer
+#define MAX 3   	//size of circular buffer
 
 typedef struct
 {
