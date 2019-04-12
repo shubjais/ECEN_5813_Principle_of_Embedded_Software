@@ -14,6 +14,10 @@ int8_t power = 0;
 uint8_t send_count = 0;
 volatile int8_t rx_data = 0;
 
+/*
+Initialize UART (clock, BAUD rate, interrupts, registers)
+*/
+
 void uart_initialize()
 {
 	uint16_t SBR;
@@ -34,7 +38,7 @@ void uart_initialize()
 	UART0->BDH &= ~UART0_BDH_SBNS(1);
 
 	/*Baud Config*/
-	SBR= (uint16_t)((UART_CLOCK_FREQ)/(16 * BAUD_RATE));
+	SBR= (uint16_t)((UART0_CLOCK_FREQ)/(16 * UART0_BAUD_RATE));
 
 	// Strip off the current value of the UARTx_BDH except for the SBR field
 	temp = UART0->BDH & ~(UART0_BDH_SBR_MASK);
@@ -44,7 +48,7 @@ void uart_initialize()
 	UART0->BDL = (uint8_t)(SBR & UART0_BDL_SBR_MASK);
 
 	/*Enable Transmitter, Receiver and Receiver interrupt*/
-	UART0->C2 |= (UART0_C2_TE_MASK)|(UART0_C2_RE_MASK)|(UART0_C2_RIE_MASK);
+	UART0->C2 |= (UART0_C2_TE_MASK) | (UART0_C2_RE_MASK) | (UART0_C2_RIE_MASK);
 
 	/*Enable IRQ*/
 	__enable_irq();
@@ -52,6 +56,9 @@ void uart_initialize()
 	NVIC_EnableIRQ(UART0_IRQn);
 }
 
+/*
+Blocking mode (Polling) UART write
+*/
 void uart_write(int8_t data)
 {
 	while(!(UART0->S1 & UART0_S1_TDRE_MASK)); //Wait for transmit buffer to get empty
@@ -59,6 +66,19 @@ void uart_write(int8_t data)
 	while(!(UART0->S1 & UART0_S1_TC_MASK)); //Wait till transmission is complete
 }
 
+/*
+Non-Blocking mode (IRQ) UART write
+*/
+void uart_write_irq(int8_t data)
+{
+	UART0->C2|=(UART0_C2_TIE_MASK); //Wait for transmit buffer to get empty
+	UART0->D = data;
+	while(!(UART0->S1 & UART0_S1_TC_MASK)); //Wait till transmission is complete
+}
+
+/*
+Non-Blocking mode (IRQ) UART read
+*/
 int8_t uart_read()
 {
 	int8_t data;
@@ -68,65 +88,37 @@ int8_t uart_read()
 	return data;
 }
 
-//void report(int8_t x)
-//{
-//	if(x!= -1)
-//	{
-//		for (int i=32; i<128; i++)
-//		{
-//			if (x==lookup[i].char_ascii_value)			//Comparing received value with lookup table
-//			{
-//				(lookup[i].char_count)++;
-//				myprintf("\r\n*REPORT*\r\n");
-//
-//				//********************************************************//
-//				for (int i=32; i<128; i++)
-//				{
-//					if (lookup[i].char_count != 0)
-//					{
-//						myprintf(" \r\n%c=%d \r\n", lookup[i].char_ascii_value, lookup[i].char_count);
-//					}
-//				}
-//				myprintf("Total Character = %d \r\n", total_char);
-//			}
-//		}
-//	}
-//}
-
-
+/*
+Interrupt handler for sending or receiving characters
+*/
 void UART0_IRQHandler()
 {
-__disable_irq();
-
- //if (UART1->S1 & UART_S1_RDRF_MASK)
+	__disable_irq();
 	if(UART0->S1 & UART0_S1_RDRF_MASK)
-{
-	 rx_data=UART0->D;
+	{
+		rx_data=UART0->D;
+		insert(Buff_Ptr,rx_data);
+		report[rx_data]++;
+		char_count++;
+	}
 
-	 if (rx_data == 13)
-	 	{
-		 rep_flag = 1;
-	 	}
-	 else
+	 if (UART0->S1 & UART0_S1_TDRE_MASK)
 	 {
-		 insert(Buff_Ptr,rx_data);
-		 report[rx_data]++;
+		 tx_flag = 1;						//Scheduler Flag
+		 UART0->C2 &=~ UART0_C2_TIE_MASK;		//Disabling Tx interrupts
 	 }
+	 __enable_irq();
+
 }
+
 
 /*
- if (UART1->S1 & UART_S1_TDRE_MASK)
- {
-	 tx_flag = 1;						//Scheduler Flag
-	 UART0->C2 &=~ UART0_C2_TIE_MASK;		//Disabling Tx interrupts
- }
+ * Creating a new printf function which uses non-blocking UART
+ *
+ * Reference: http://www.firmcodes.com/write-printf-function-c/
 */
 
- __enable_irq();
-
-}
-
-void my_printf(char* format,...)
+void my_printf_irq(char	*format,...)
 {
 	char *traverse;
 	unsigned int i;
@@ -140,7 +132,7 @@ void my_printf(char* format,...)
 	{
 		if( *traverse != '%' )
 		{
-			uart_write(*traverse);
+			uart_write_irq(*traverse);
 		}
 
 		else
@@ -150,35 +142,23 @@ void my_printf(char* format,...)
 			switch(*traverse)
 			{
 				case 'c' : i = va_arg(arg,int);		//Fetch char argument
-							uart_write(i);
+							uart_write_irq(i);
 							break;
 
 				case 'd' : i = va_arg(arg,int); 		//Fetch Decimal/Integer argument
 							if(i<0)
 							{
 								i = -i;
-								uart_write('-');
+								uart_write_irq('-');
 							}
 							//puts(convert(i,10));
 							s = convert(i,10);
 							while(*s != '\0')
 							{
-								uart_write(*s);
+								uart_write_irq(*s);
 								s++;
 							}
 							break;
-
-	//			case 'o': i = va_arg(arg,unsigned int); //Fetch Octal representation
-	//						puts(convert(i,8));
-	//						break;
-	//
-	//			case 's': s = va_arg(arg,char *); 		//Fetch string
-	//						puts(s);
-	//						break;
-	//
-	//			case 'x': i = va_arg(arg,unsigned int); //Fetch Hexadecimal representation
-	//						puts(convert(i,16));
-	//						break;
 			}
 		}
 	}

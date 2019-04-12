@@ -27,11 +27,13 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
+/*========================================================================
+** main.c
+** ECEN5813
+** Submitted By: Shubham Jaiswal, Ayush Dhoot
+**========================================================================*/
 
 #include "main.h"
-
-//#include "fsl_debug_console.h"
 
 /*******************************************************************************
  * Definitions
@@ -50,10 +52,12 @@
 char report[256]={0};
 
 /*
-https://www.geeksforgeeks.org/program-for-nth-fibonacci-number/
+Reference: https://www.geeksforgeeks.org/program-for-nth-fibonacci-number/
+Calculates the fibonacci number.
 */
 
-int fib(int n)
+
+int fib(int16_t n)
 {
   int a = 0, b = 1, c, i;
   if( n == 0)
@@ -67,81 +71,71 @@ int fib(int n)
   return b;
 }
 
+/*Prints the application report for PART5.
+Skips if number of characters received is 0.
+*/
 void print_report(void)
 {
-
-
 	for(int i=0; i<256; i++)
 	{
 		if( report[i] > 0)
 		{
-
-			my_printf("\n\r");
-			my_printf("%c => %d", i, report[i]);
-			my_printf("\n\r");
+			my_printf_irq("\n\r");
+			my_printf_irq("%c => %d",i, report[i]);
+			my_printf_irq("\n\r");
 		}
 	}
-	my_printf("\n\rFibonnaci Number for number %d is %d", num, fib(num));
-	rep_flag=0;
 }
 
+void init_LED(void)
+{
+	SIM->SCGC5 |= SIM_SCGC5_PORTB_MASK;
+	PORTB->PCR[18] |= PORT_PCR_MUX(1);
+	GPIOB->PDDR |= (1 << 18);
+}
+
+void toggle_LED(void)
+{
+	 GPIOB->PTOR |= (1 << 18);
+	 for(int i=0 ; i< 100000; i++)
+	 {
+
+	 }
+}
 /*!s
  * @brief Main function
  */
 
 int main(void)
 {
-    //char ch;
-
     /* Init board hardware. */
     BOARD_InitPins();
     BOARD_BootClockRUN();
-    uart_initialize();
+    uart_initialize();		// Initialize UART clock, pins and configure baud rate.
+    init_LED();              //initialize led clock, pins and direction
     //BOARD_InitDebugConsole();
-    Buff_Ptr = init((int)LENGTH);
-    //PRINTF("hello world.\r\n");
-    int len = LENGTH;
-    my_printf("Hello!");
+    Buff_Ptr = init((int)CBUF_LENGTH);
+    my_printf_irq("Hello! UART and Circular buffer have been initialized.");
+    my_printf_irq("\n\rPlease Input some Characters:");
 
-
-    //int n=9;
-
-//    my_printf("Fibonnaci Number for number %d is %d", n, fib(n));
-
-    //Buff_Ptr = buffer_resize(Buff_Ptr, (LENGTH+6));
-
-    //char *startadd = Buff_Ptr->Buffer;
     while (1)
     {
-
-
-/*
-    	if(num>2)
-    	{
-    	for(int i=0; i<num; i++)
-    	{
-    		my_printf("Buffer element %d : %c", i, *startadd);
-    		startadd++;
-    	}
-
-    }
-*/
-
-
-
-   // if(entries(Buff_Ptr) == len)
-    if(Buff_Ptr->Buffer_full)
-    {
-    	len=len+6;
-    	Buff_Ptr = buffer_resize(Buff_Ptr, len);
-    	Buff_Ptr->Buffer_full = false;
-    }
-
-	if (rep_flag == 1)
-	{
-			print_report();
-			//break;
-	}
-
+			if(tx_flag == 1)
+			{
+				__disable_irq();
+				tx_flag = 0;
+				__enable_irq();
+				while(num != 0)
+				{
+					Buff_data = remove_element(Buff_Ptr);
+					//report[Buff_data]++;
+					if(num == 0)
+					{
+						my_printf_irq("\n\rFibonnaci Number for number %d is %d",char_count, fib(char_count));
+						print_report();
+					}
+				}
+			}
+				toggle_LED(); //toggles the LED.
     }
 }

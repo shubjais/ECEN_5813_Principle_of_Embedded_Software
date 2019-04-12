@@ -28,25 +28,25 @@ endif
 # Add inputs and outputs from these tool invocations to the build variables 
 
 # All Target
-all: Project2.axf
+all: Project2_v2.axf
 
 # Tool invocations
-Project2.axf: $(OBJS) $(USER_OBJS)
+Project2_v2.axf: $(OBJS) $(USER_OBJS)
 	@echo 'Building target: $@'
 	@echo 'Invoking: MCU Linker'
-	arm-none-eabi-gcc -nostdlib -z muldefs -Xlinker -Map="Project2.map" -Xlinker --gc-sections -Xlinker -print-memory-usage -Xlinker --sort-section=alignment -mcpu=cortex-m0plus -mthumb -T "Project2_Debug.ld" -o "Project2.axf" $(OBJS) $(USER_OBJS) $(LIBS)
+	arm-none-eabi-gcc -nostdlib -z muldefs -Xlinker -Map="Project2_v2.map" -Xlinker --gc-sections -Xlinker -print-memory-usage -Xlinker --sort-section=alignment -mcpu=cortex-m0plus -mthumb -T "Project2_updateed_Debug.ld" -o "Project2_v2.axf" $(OBJS) $(USER_OBJS) $(LIBS)
 	@echo 'Finished building target: $@'
 	@echo ' '
 	$(MAKE) --no-print-directory post-build
 
 # Other Targets
 clean:
-	-$(RM) $(EXECUTABLES)$(OBJS)$(C_DEPS) Project2.axf
+	-$(RM) $(EXECUTABLES)$(OBJS)$(C_DEPS) Project2_v2.axf
 	-@echo ' '
 
 post-build:
 	-@echo 'Performing post-build steps'
-	-arm-none-eabi-size "Project2.axf"; # arm-none-eabi-objcopy -v -O binary "Project2.axf" "Project2.bin" ; # checksum -p MKL25Z128xxx4 -d "Project2.bin";
+	-arm-none-eabi-size "Project2_v2.axf"; # arm-none-eabi-objcopy -v -O binary "Project2_v2.axf" "Project2_v2.bin" ; # checksum -p MKL25Z128xxx4 -d "Project2_v2.bin";
 	-@echo ' '
 
 .PHONY: all clean dependents post-build
