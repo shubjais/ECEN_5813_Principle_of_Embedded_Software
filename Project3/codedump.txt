@@ -1,0 +1,369 @@
+/*
+ * adc.h
+ *
+ *  Created on: Apr 21, 2019
+ *      Author: Shubham Jaiswal
+ */
+
+#ifndef ADC_H_
+#define ADC_H_
+
+#include <stdint.h>
+#include "MKL25Z4.h"
+
+void adc_init();
+void adc_enable();
+uint16_t adc_read();
+
+#endif /* ADC_H_ */
+
+/*
+ * adc.c
+ *
+ *  Created on: Apr 21, 2019
+ *  Author: Shubham Jaiswal, Ayush Dhoot
+ */
+
+#include "adc.h"
+
+void adc_init()
+{
+	/*Enable ADC Clock gates*/
+	SIM->SCGC5 |= SIM_SCGC5_PORTE_MASK;
+	SIM->SCGC6 |= SIM_SCGC6_ADC0_MASK;
+	ADC0->CFG1=0;
+	ADC0->SC3=0;
+	ADC0->SC1[0] |= ADC_SC1_ADCH_MASK;  //Disable ADC first.
+
+	//  Bus/2 clock selected, 16-bit single-ended, and divide factor is input_clock/8
+	ADC0->CFG1 |= ADC_CFG1_ADICLK(1) | ADC_CFG1_MODE_MASK | ADC_CFG1_ADIV_MASK;
+	ADC0->SC1[0] &= ~(ADC_SC1_AIEN_MASK) & ~(ADC_SC1_DIFF_MASK);							// Interrupts disable,
+	ADC0->SC2 |=  ADC_SC2_DMAEN_MASK;	 // Enable ADC DMA request
+
+	// Continuous Conversion, Hardware averaging, 32 samples averaged.
+	ADC0->SC3 |= ADC_SC3_ADCO_MASK | ADC_SC3_AVGE_MASK | ADC_SC3_AVGS_MASK;
+}
+
+/*
+ * Enables ADC channel O in single ended mode.
+ */
+void adc_enable()
+{
+	ADC0->SC1[0] &= ~ADC_SC1_ADCH_MASK;
+}
+
+/*
+ * Returns data from ADC result data register
+ */
+uint16_t adc_read()
+{
+	while(!(ADC0->SC1[0] & ADC_SC1_COCO_MASK)); //Wait till conversion completes
+	return ADC0->R[0];
+}
+/*
+ * dma.h
+ *
+ *  Created on: Apr 21, 2019
+ *      Author: Shubham Jaiswal, Ayush Dhoot
+ */
+
+#ifndef DMA_H_
+#define DMA_H_
+
+/***************************************************Include Header Files******************************************************/
+#include "MKL25Z4.h"
+#include <stdint.h>
+#include "main.h"
+#include "adc.h"
+/*****************************************************************************************************************************/
+/***************************************************Global Variable declaration**********************************************/
+
+volatile uint8_t dma_irq_exit = 0; //Flag to check DMA ISR entry and exit.
+uint16_t d_buff[128];					// Array to represent double Buffer.
+uint16_t d_buff1 = 0;					//Array index to represent 1st part of double Buffer
+uint16_t d_buff2 = 64;				//Array index to represent 2nd part of double Buffer
+/*****************************************************************************************************************************/
+/*******************************************Function declarations/prototypes**************************************************/
+void dma_init(void);
+void DMA0_IRQHandler(void);
+/*****************************************************************************************************************************/
+#endif /* DMA_H_ */
+
+
+/*
+ * dma.c
+ *
+ *  Created on: Apr 19, 2019
+ *  Author: Ayush Dhoot, Shubham Jaiswal
+ *
+ */
+
+
+/*
+ * Reference: https://community.nxp.com/docs/DOC-102951
+ * DMA example
+ */
+
+
+#include "dma.h"
+
+/*
+ * Function to Initialize DMA peripheral and DMAMUX to source channel 0 of ADC to channel 0 of DMA.
+ */
+void dma_init(void)
+{
+	SIM->SCGC6 |= SIM_SCGC6_DMAMUX_MASK;					// Clock to DMA mux
+	SIM->SCGC7 |= SIM_SCGC7_DMA_MASK;					// Clock to DMA module
+
+	DMAMUX0->CHCFG[0] = 0x00;								// Disable DMAMUX
+
+	DMA0->DMA[0].DSR_BCR |= DMA_DSR_BCR_DONE_MASK;				// Clearing previous errors
+	DMA0->DMA[0].DSR_BCR |= DMA_DSR_BCR_DONE_MASK;				// Ensuring the clear
+	DMA0->DMA[0].SAR = 0x4003B010;								// Source Address
+	DMA0->DMA[0].DSR_BCR |=DMA_DSR_BCR_BCR(128);				// 128 - 64(Number of elements in a part of buffer) * 2(BCR decrement as 16-bit) = 0
+	DMA0->DMA[0].DCR &= ~(DMA_DCR_SSIZE_MASK | DMA_DCR_DSIZE_MASK); //clear source size and destination size fields
+
+	// Configure DMA source, destination size, enable DMA interrupt, Enable peripheral request, Increment Destination address
+	DMA0->DMA[0].DCR |= DMA_DCR_SSIZE(2) | DMA_DCR_DSIZE(2) | DMA_DCR_DINC_MASK | DMA_DCR_DMOD(0) | DMA_DCR_ERQ_MASK  | DMA_DCR_EADREQ_MASK | DMA_DCR_CS_MASK  | DMA_DCR_EINT_MASK;
+	DMA0->DMA[0].DAR = (uint32_t)&d_buff[d_buff1];								// Destination address
+
+	DMAMUX0->CHCFG[0] |= DMAMUX_CHCFG_SOURCE(40) | DMAMUX_CHCFG_ENBL_MASK;			// Select source as ADC0, Enable DMAMUX
+
+	__enable_irq();										// Enable interrupts
+	NVIC_EnableIRQ(DMA0_IRQn);
+}
+
+/*
+ * Handles DMA0 interrupt and reset the BCR data fields with 128.
+ */
+
+void DMA0_IRQHandler(void)
+{
+	/*GPIO set*/
+	GPIOD->PSOR |= (1 << 1);
+
+	/* Clear DMA Interrupt and error bits.*/
+	DMA0->DMA[0].DSR_BCR |= DMA_DSR_BCR_DONE_MASK;	// Clear Done Flag
+	DMA0->DMA[0].DSR_BCR |= DMA_DSR_BCR_DONE_MASK;
+
+	if(buff_change_flag==1)
+		{
+			DMA0->DMA[0].DAR = (uint32_t)&d_buff[d_buff1];		//Toggle Buffer
+			buff_change_flag=0;
+		}
+	else
+		{
+			DMA0->DMA[0].DAR = (uint32_t)&d_buff[d_buff2];		//Toggle Buffer
+			buff_change_flag=1;
+		}
+
+	DMA0->DMA[0].DSR_BCR |= DMA_DSR_BCR_BCR(128);		// Set byte count register to start interrupt again.
+
+	/*GPIO clear*/
+	GPIOD->PCOR |= (1 << 1);
+
+	dma_irq_exit=1;    //Set IRQ exit flag
+}
+
+
+/*
+ * main.h
+ *
+ *  Created on: Apr 21, 2019
+ *      Author: Shubham Jaiswal, Ayush Dhoot
+ */
+
+#ifndef MAIN_H_
+#define MAIN_H_
+/***********************************************************************************************************/
+#include "fsl_device_registers.h"
+#include "fsl_debug_console.h"
+#include "board.h"
+#include "pin_mux.h"
+#include "math.h"
+/***********************************************************************************************************/
+/***********************************************************************************************************/
+#include "adc.h"
+#include "dma.h"
+/***********************************************************************************************************/
+/***********************************************************************************************************/
+#define alpha (0.7)      //Decay factor
+/***********************************************************************************************************/
+/***********************************************************************************************************/
+extern int buff_change_flag;
+uint16_t peak = 0;
+uint16_t new_peak = 0;
+uint16_t prev_peak = 0;
+
+typedef struct
+{
+	float min_val_range;
+	float max_val_range;
+	float log_value;
+}log_lookup;
+
+log_lookup log_lookup_table[] = {{0,1638.4,-1.60}, {1638.4,3276.8,-1.30}, {3276.8,4915.2,-1.12}, {4915.2,6553.6,-0.99}, {6553.6,8192, -0.90},
+								{8192,9830.4,-0.82}, {9830.4,11468.8,-0.75}, {11468.8,13107.2,-0.69}, {13107.2,14745.6,-0.64}, {14745.6,16384,-0.60},
+								{16384,18022.4,-0.56}, {18022.4,19660.8,-0.52}, {19660.8,21299.2,-0.48}, {21299.2,22937.6,-0.45}, {22937.6,24576,-0.42},
+								{24576,26214.4,-0.39}, {26214.4,27852.8,-0.37}, {27852.8,29491.2,-0.34}, {29491.2,31129.6, -0.32}, {31129.6,32768,-0.30},
+								{32768,34406.4,-0.27}, {34406.4 ,36044.8 ,-0.25}, {36044.8, 37683.2 ,-0.24}, {37683.2, 39321.6,-0.22}, {39321.6, 40960.0, -0.20},
+								{40960.0,42598.4,-0.18}, {42598.4, 44236.8,-0.17}, {44236.8,45875.2 ,-0.15}, {45875.2, 47513.6,-0.13}, {47513.6, 49152.0,-0.12},
+								{49152.0 ,50790.4 ,-0.11}, {50790.4 ,52428.8 ,-0.09}, {52428.8, 54067.2,-0.08}, {54067.2,55705.6,-0.07}, {55705.6, 57344.0 ,-0.05},
+								{57344.0 ,58982.4 ,-0.04}, {58982.4 ,60620.8 ,-0.03}, {60620.8 ,62259.2 ,-0.02}, {62259.2, 63897.6, -0.01}, {63897.6 ,65536.0,0}
+};
+/***********************************************************************************************************/
+/***********************************************************************************************************/
+void peak_calculation(void);
+void dbfs_calc(uint16_t peak1);
+void init_LED(void);
+/***********************************************************************************************************/
+#endif /* MAIN_H_ */
+
+
+/*
+ * Copyright (c) 2013 - 2015, Freescale Semiconductor, Inc.
+ * Copyright 2016-2017 NXP
+ *
+ * Redistribution and use in source and binary forms, with or without modification,
+ * are permitted provided that the following conditions are met:
+ *
+ * o Redistributions of source code must retain the above copyright notice, this list
+ *   of conditions and the following disclaimer.
+ *
+ * o Redistributions in binary form must reproduce the above copyright notice, this
+ *   list of conditions and the following disclaimer in the documentation and/or
+ *   other materials provided with the distribution.
+ *
+ * o Neither the name of the copyright holder nor the names of its
+ *   contributors may be used to endorse or promote products derived from this
+ *   software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR
+ * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+ * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+
+/*******************************************************************************
+ * Definitions
+ ******************************************************************************/
+
+
+/*******************************************************************************
+ * Prototypes
+ ******************************************************************************/
+
+/*******************************************************************************
+ * Code
+ ******************************************************************************/
+
+#include "main.h"
+
+
+int buff_change_flag = 0;
+
+/*!
+ * @brief Main function
+ */
+int main(void)
+{
+    //char ch;
+
+    /* Init board hardware.*/
+    BOARD_InitPins();
+    BOARD_BootClockRUN();
+    BOARD_InitDebugConsole();
+
+    //Initialize peripherals
+    init_LED();
+    adc_init();
+    dma_init();
+
+    PRINTF("hello world.\r\n");
+
+    //Enable ADC
+    adc_enable();
+
+    while (1)
+    {
+    	if (dma_irq_exit == 1)  //Check if Buffer was filled be DMA ISR
+    	{
+    		peak_calculation();
+    		dma_irq_exit = 0;			// Clear the flag
+    	}
+    }
+}
+
+/*
+ * Peak level calculation
+ */
+void peak_calculation(void)
+{
+	uint16_t index;
+	if (buff_change_flag == 1)    // Check which buffer did DMA release
+	{
+		index = d_buff1;
+	}
+	else
+	{
+		index = d_buff2;
+	}
+	new_peak = d_buff[index];
+
+	for(uint16_t i = index; i < (index + 64); i++)  //Calculate the peak in the just received buffer
+	{
+
+		if(new_peak < d_buff[i])
+		{
+			new_peak = d_buff[i];
+		}
+	}
+
+	if(prev_peak < new_peak)			//Compare new potential peak with the prev established peak
+	{
+	    PRINTF("no decay\r\n");
+	    peak = new_peak;
+	    prev_peak = new_peak;				//Replace new peak with previous peak
+	}
+	else
+	{
+		peak = alpha * peak;				//Decay the peak if potential peak is smaller
+	}
+
+ 	PRINTF("\tADC Peak value: %d In Hex: %x\r\n", peak, peak);
+ 	dbfs_calc(peak);
+	PRINTF("*********************************************************\r\n");
+}
+
+/*
+valueDBFS = 20*log10(value/65536)
+*/
+
+void dbfs_calc(uint16_t peak)
+{
+	float peak_dbfs,peak_log;
+	for(int i = 0; i < 40; i++)
+	{
+		if(peak <= log_lookup_table[i].max_val_range && peak >= log_lookup_table[i].min_val_range)  // Look for peak value in log_lookup_table
+		{
+			peak_log = log_lookup_table[i].log_value;
+			break;
+		}
+	}
+	peak_dbfs = 20*peak_log;						//Calculate DBFS value
+	PRINTF("\tIn DBFS: %.2f \r\n ", peak_dbfs);
+}
+
+void init_LED(void)
+{
+	SIM->SCGC5 |= SIM_SCGC5_PORTD_MASK;       // Enable Port D clock
+	PORTD->PCR[1] |= PORT_PCR_MUX(1);		//Set function as GPIO
+	GPIOD->PDDR |= (1 << 1);				//Set GPIO as output
+}
